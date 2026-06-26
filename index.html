@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SoftDrinks – Every Sip, Every Flavor, Every Occasion.</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+/* ===================== RESET & VARIABLES ===================== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --primary: #E63946;
+  --secondary: #1F2937;
+  --bg: #F8FAFC;
+  --accent: #10B981;
+  --btn: #2563EB;
+  --white: #ffffff;
+  --gray: #6B7280;
+  --light-gray: #E5E7EB;
+  --card-bg: #ffffff;
+  --nav-bg: rgba(248,250,252,0.95);
+  --text: #1F2937;
+  --subtext: #6B7280;
+  --shadow: 0 4px 24px rgba(0,0,0,0.08);
+  --shadow-hover: 0 12px 40px rgba(0,0,0,0.15);
+  --radius: 16px;
+  --transition: 0.3s ease;
+}
+[data-theme="dark"] {
+  --bg: #0F172A;
+  --secondary: #F8FAFC;
+  --card-bg: #1E293B;
+  --nav-bg: rgba(15,23,42,0.97);
+  --text: #F1F5F9;
+  --subtext: #94A3B8;
+  --light-gray: #334155;
+  --shadow: 0 4px 24px rgba(0,0,0,0.4);
+  --shadow-hover: 0 12px 40px rgba(0,0,0,0.5);
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); transition: background var(--transition), color var(--transition); overflow-x: hidden; }
+
+/* ===================== LOADING SCREEN ===================== */
+#loader {
+  position: fixed; inset: 0; background: var(--secondary); z-index: 9999;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  transition: opacity 0.5s ease;
+}
+[data-theme="dark"] #loader { background: #0F172A; }
+.loader-logo { font-size: 2.8rem; font-weight: 900; color: var(--white); letter-spacing: -1px; }
+[data-theme="dark"] .loader-logo { color: var(--primary); }
+.loader-logo span { color: var(--primary); }
+[data-theme="dark"] .loader-logo span { color: var(--white); }
+.loader-bar { width: 200px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 99px; margin-top: 20px; overflow: hidden; }
+.loader-fill { height: 100%; background: var(--primary); border-radius: 99px; animation: loadFill 1.8s ease forwards; }
+@keyframes loadFill { from { width: 0% } to { width: 100% } }
+.loader-tagline { color: rgba(255,255,255,0.6); font-size: 0.85rem; margin-top: 12px; }
+[data-theme="dark"] .loader-tagline { color: rgba(255,255,255,0.4); }
+
+/* ===================== NAV ===================== */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: var(--nav-bg); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--light-gray);
+  padding: 0 5%; height: 70px;
+  display: flex; align-items: center; justify-content: space-between;
+  transition: all var(--transition);
+}
+nav.scrolled { box-shadow: var(--shadow); }
+.nav-logo { font-size: 1.6rem; font-weight: 900; color: var(--text); text-decoration: none; letter-spacing: -0.5px; }
+.nav-logo span { color: var(--primary); }
+.nav-links { display: flex; gap: 32px; list-style: none; }
+.nav-links a { text-decoration: none; color: var(--subtext); font-weight: 500; font-size: 0.9rem; transition: color var(--transition); position: relative; }
+.nav-links a::after { content:''; position:absolute; bottom:-4px; left:0; width:0; height:2px; background: var(--primary); transition: width var(--transition); border-radius:99px; }
+.nav-links a:hover, .nav-links a.active { color: var(--primary); }
+.nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+.nav-right { display: flex; align-items: center; gap: 16px; }
+.nav-search { display: flex; align-items: center; background: var(--light-gray); border-radius: 99px; padding: 6px 14px; gap: 8px; }
+.nav-search input { border: none; background: transparent; font-family: 'Poppins', sans-serif; font-size: 0.85rem; color: var(--text); width: 140px; outline: none; }
+.nav-search i { color: var(--subtext); font-size: 0.85rem; }
+.nav-btn { background: none; border: none; cursor: pointer; color: var(--text); font-size: 1.1rem; position: relative; transition: color var(--transition); padding: 4px; }
+.nav-btn:hover { color: var(--primary); }
+.cart-count {
+  position: absolute; top: -6px; right: -6px;
+  background: var(--primary); color: white; border-radius: 50%;
+  width: 18px; height: 18px; font-size: 0.65rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+.hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+.hamburger span { width: 24px; height: 2px; background: var(--text); border-radius: 99px; transition: all var(--transition); }
+
+/* ===================== MOBILE MENU ===================== */
+.mobile-menu {
+  display: none; position: fixed; top: 70px; left: 0; right: 0;
+  background: var(--nav-bg); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--light-gray);
+  padding: 20px 5%; z-index: 999; flex-direction: column; gap: 16px;
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu a { text-decoration: none; color: var(--text); font-weight: 500; font-size: 1rem; padding: 8px 0; border-bottom: 1px solid var(--light-gray); }
+.mobile-search { display: flex; align-items: center; background: var(--light-gray); border-radius: 99px; padding: 10px 16px; gap: 10px; }
+.mobile-search input { border: none; background: transparent; font-family: 'Poppins', sans-serif; font-size: 0.9rem; color: var(--text); flex: 1; outline: none; }
+
+/* ===================== HERO ===================== */
+#home {
+  min-height: 100vh; display: flex; align-items: center;
+  background: linear-gradient(135deg, var(--secondary) 0%, #374151 60%, #1a1a2e 100%);
+  position: relative; overflow: hidden; padding-top: 70px;
+}
+[data-theme="dark"] #home { background: linear-gradient(135deg, #020617 0%, #0F172A 60%, #1E293B 100%); }
+.hero-bubbles { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.bubble {
+  position: absolute; border-radius: 50%;
+  background: rgba(230,57,70,0.08); animation: float linear infinite;
+}
+@keyframes float {
+  0% { transform: translateY(100vh) scale(0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-20vh) scale(1); opacity: 0; }
+}
+.hero-content {
+  position: relative; z-index: 2; padding: 0 5%;
+  display: grid; grid-template-columns: 1fr 1fr; align-items: center;
+  gap: 60px; width: 100%; max-width: 1280px; margin: 0 auto;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(230,57,70,0.15); border: 1px solid rgba(230,57,70,0.3);
+  color: var(--primary); border-radius: 99px;
+  padding: 6px 16px; font-size: 0.8rem; font-weight: 600; margin-bottom: 24px;
+  animation: fadeInUp 0.6s ease both;
+}
+.hero-badge i { font-size: 0.75rem; }
+.hero-title {
+  font-size: clamp(2.4rem, 5vw, 4rem); font-weight: 900;
+  line-height: 1.1; color: white; margin-bottom: 20px;
+  animation: fadeInUp 0.7s 0.1s ease both;
+}
+.hero-title .highlight {
+  color: transparent; -webkit-text-stroke: 2px var(--primary);
+  display: block; animation: textReveal 1s 0.5s ease both;
+}
+@keyframes textReveal { from { opacity: 0; letter-spacing: 10px; } to { opacity: 1; letter-spacing: -1px; } }
+.hero-tagline { color: rgba(255,255,255,0.6); font-size: 1rem; line-height: 1.7; margin-bottom: 36px; animation: fadeInUp 0.7s 0.2s ease both; }
+.hero-actions { display: flex; gap: 16px; flex-wrap: wrap; animation: fadeInUp 0.7s 0.3s ease both; }
+.btn-primary { background: var(--primary); color: white; border: none; padding: 14px 32px; border-radius: 99px; font-family: 'Poppins', sans-serif; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all var(--transition); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+.btn-primary:hover { background: #c62828; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(230,57,70,0.4); }
+.btn-outline { background: transparent; color: white; border: 2px solid rgba(255,255,255,0.3); padding: 14px 32px; border-radius: 99px; font-family: 'Poppins', sans-serif; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all var(--transition); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+.btn-outline:hover { border-color: white; background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+.hero-visual { display: flex; align-items: center; justify-content: center; animation: fadeInUp 0.8s 0.2s ease both; position: relative; }
+.hero-cans {
+  display: flex; gap: -20px; align-items: flex-end; justify-content: center;
+  position: relative;
+}
+.can-wrapper { position: relative; animation: canFloat ease-in-out infinite; }
+.can-wrapper:nth-child(1) { animation-duration: 3s; animation-delay: 0s; }
+.can-wrapper:nth-child(2) { animation-duration: 3.5s; animation-delay: 0.5s; z-index: 2; }
+.can-wrapper:nth-child(3) { animation-duration: 4s; animation-delay: 1s; }
+@keyframes canFloat { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-16px); } }
+.can {
+  width: 100px; height: 220px; border-radius: 18px 18px 12px 12px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-size: 2.5rem; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  cursor: default; transition: transform var(--transition);
+}
+.can:hover { transform: scale(1.08) rotate(-3deg); }
+.can-1 { background: linear-gradient(160deg, #E63946 0%, #9b1c24 100%); }
+.can-2 { background: linear-gradient(160deg, #1F2937 0%, #374151 100%); width: 114px; height: 250px; border-radius: 20px 20px 14px 14px; }
+.can-3 { background: linear-gradient(160deg, #10B981 0%, #065f46 100%); }
+.can-label { font-size: 0.7rem; font-weight: 700; color: rgba(255,255,255,0.8); letter-spacing: 2px; margin-top: 8px; }
+.glow { position: absolute; bottom: -30px; left: 50%; transform: translateX(-50%); width: 80%; height: 30px; background: radial-gradient(ellipse, rgba(230,57,70,0.4), transparent); border-radius: 50%; filter: blur(8px); }
+.hero-stats { display: flex; gap: 32px; margin-top: 48px; animation: fadeInUp 0.7s 0.4s ease both; }
+.hero-stat { }
+.hero-stat-num { font-size: 1.6rem; font-weight: 800; color: var(--primary); line-height: 1; }
+.hero-stat-label { font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-top: 2px; }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ===================== SECTIONS ===================== */
+section { padding: 100px 5%; }
+.section-label { display: inline-block; color: var(--primary); font-size: 0.8rem; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 12px; }
+.section-title { font-size: clamp(1.8rem, 3vw, 2.8rem); font-weight: 800; line-height: 1.2; margin-bottom: 16px; }
+.section-sub { color: var(--subtext); font-size: 1rem; line-height: 1.7; max-width: 520px; }
+.section-header { margin-bottom: 56px; }
+.section-header.center { text-align: center; }
+.section-header.center .section-sub { margin: 0 auto; }
+
+/* ===================== CATEGORY PILLS ===================== */
+.category-pills { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 48px; }
+.pill {
+  padding: 10px 22px; border-radius: 99px; border: 2px solid var(--light-gray);
+  background: var(--card-bg); cursor: pointer; font-family: 'Poppins', sans-serif;
+  font-size: 0.85rem; font-weight: 500; color: var(--text);
+  transition: all var(--transition); display: flex; align-items: center; gap: 8px;
+}
+.pill:hover, .pill.active { background: var(--primary); color: white; border-color: var(--primary); transform: translateY(-2px); }
+
+/* ===================== PRODUCT GRID ===================== */
+.product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 28px; }
+.product-card {
+  background: var(--card-bg); border-radius: var(--radius); overflow: hidden;
+  box-shadow: var(--shadow); transition: all var(--transition);
+  position: relative; border: 1px solid var(--light-gray);
+}
+.product-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-hover); }
+.product-card-img {
+  height: 180px; display: flex; align-items: center; justify-content: center;
+  font-size: 4.5rem; position: relative;
+  background: linear-gradient(135deg, #f0f4f8, #e8ecf0);
+  transition: all var(--transition);
+}
+[data-theme="dark"] .product-card-img { background: linear-gradient(135deg, #1E293B, #334155); }
+.product-card:hover .product-card-img { background: linear-gradient(135deg, #fee2e2, #fce7f3); }
+[data-theme="dark"] .product-card:hover .product-card-img { background: linear-gradient(135deg, #3f1515, #3b0764); }
+.product-card-img .emoji { transition: transform var(--transition); display: block; }
+.product-card:hover .emoji { transform: scale(1.15) rotate(-5deg); }
+.wish-btn {
+  position: absolute; top: 12px; right: 12px; background: var(--white);
+  border: none; border-radius: 50%; width: 34px; height: 34px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; box-shadow: var(--shadow); transition: all var(--transition);
+  color: var(--subtext); font-size: 0.85rem;
+}
+[data-theme="dark"] .wish-btn { background: #334155; }
+.wish-btn:hover, .wish-btn.active { color: var(--primary); transform: scale(1.1); }
+.wish-btn.active { color: var(--primary); }
+.badge-new { position: absolute; top: 12px; left: 12px; background: var(--accent); color: white; font-size: 0.65rem; font-weight: 700; padding: 3px 10px; border-radius: 99px; letter-spacing: 1px; }
+.badge-hot { position: absolute; top: 12px; left: 12px; background: var(--primary); color: white; font-size: 0.65rem; font-weight: 700; padding: 3px 10px; border-radius: 99px; letter-spacing: 1px; }
+.product-card-body { padding: 18px; }
+.product-category { font-size: 0.72rem; color: var(--subtext); font-weight: 500; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+.product-name { font-size: 1rem; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+.stars { color: #FBBF24; font-size: 0.8rem; margin-bottom: 10px; }
+.stars span { color: var(--subtext); font-size: 0.75rem; margin-left: 4px; }
+.product-footer { display: flex; align-items: center; justify-content: space-between; }
+.product-price { font-size: 1.2rem; font-weight: 800; color: var(--primary); }
+.product-price .old { font-size: 0.8rem; color: var(--subtext); text-decoration: line-through; font-weight: 400; margin-right: 4px; }
+.add-btn {
+  background: var(--btn); color: white; border: none; padding: 8px 18px;
+  border-radius: 99px; font-family: 'Poppins', sans-serif; font-size: 0.8rem;
+  font-weight: 600; cursor: pointer; transition: all var(--transition);
+  display: flex; align-items: center; gap: 6px;
+}
+.add-btn:hover { background: #1d4ed8; transform: scale(1.04); }
+.add-btn.added { background: var(--accent); }
+
+/* ===================== BEST SELLERS ===================== */
+#bestsellers { background: var(--secondary); color: white; }
+[data-theme="dark"] #bestsellers { background: #020617; }
+#bestsellers .section-title { color: white; }
+#bestsellers .section-sub { color: rgba(255,255,255,0.6); }
+.bestseller-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 24px; }
+.bestseller-card {
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius); padding: 28px 20px; text-align: center;
+  cursor: pointer; transition: all var(--transition); position: relative; overflow: hidden;
+}
+.bestseller-card::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, var(--primary), transparent); opacity: 0; transition: opacity var(--transition); }
+.bestseller-card:hover { transform: translateY(-6px); border-color: rgba(230,57,70,0.4); }
+.bestseller-card:hover::before { opacity: 0.08; }
+.bestseller-rank { font-size: 0.7rem; font-weight: 700; color: var(--primary); letter-spacing: 2px; margin-bottom: 12px; }
+.bestseller-emoji { font-size: 3.5rem; margin-bottom: 12px; display: block; transition: transform var(--transition); }
+.bestseller-card:hover .bestseller-emoji { transform: scale(1.2) rotate(-5deg); }
+.bestseller-name { font-weight: 700; color: white; margin-bottom: 6px; font-size: 0.95rem; }
+.bestseller-price { color: var(--primary); font-weight: 700; }
+.bestseller-bar { height: 3px; background: rgba(255,255,255,0.1); border-radius: 99px; margin: 14px 0 0; overflow: hidden; }
+.bestseller-fill { height: 100%; background: var(--primary); border-radius: 99px; transition: width 1.5s ease; width: 0; }
+
+/* ===================== OFFERS ===================== */
+.offers-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 28px; }
+.offer-card {
+  border-radius: var(--radius); overflow: hidden;
+  position: relative; min-height: 200px; cursor: pointer;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+.offer-card:hover { transform: translateY(-6px) scale(1.02); box-shadow: var(--shadow-hover); }
+.offer-bg { position: absolute; inset: 0; }
+.offer-1 .offer-bg { background: linear-gradient(135deg, #E63946, #9b1c24); }
+.offer-2 .offer-bg { background: linear-gradient(135deg, #2563EB, #1e3a8a); }
+.offer-3 .offer-bg { background: linear-gradient(135deg, #10B981, #065f46); }
+.offer-emoji { position: absolute; right: 20px; bottom: 20px; font-size: 5rem; opacity: 0.25; transition: all var(--transition); }
+.offer-card:hover .offer-emoji { opacity: 0.4; transform: scale(1.1) rotate(-10deg); }
+.offer-content { position: relative; z-index: 1; padding: 30px; }
+.offer-tag { display: inline-block; background: rgba(255,255,255,0.2); color: white; font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; padding: 4px 12px; border-radius: 99px; margin-bottom: 14px; }
+.offer-title { font-size: 1.5rem; font-weight: 800; color: white; margin-bottom: 8px; }
+.offer-desc { color: rgba(255,255,255,0.75); font-size: 0.88rem; margin-bottom: 20px; }
+.offer-btn { background: white; border: none; padding: 10px 22px; border-radius: 99px; font-family: 'Poppins', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all var(--transition); }
+.offer-1 .offer-btn { color: var(--primary); }
+.offer-2 .offer-btn { color: var(--btn); }
+.offer-3 .offer-btn { color: var(--accent); }
+.offer-btn:hover { transform: scale(1.05); }
+
+/* ===================== STATS ===================== */
+#stats { background: var(--primary); }
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; }
+.stat-item { text-align: center; }
+.stat-num { font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 900; color: white; line-height: 1; }
+.stat-label { color: rgba(255,255,255,0.7); font-size: 0.9rem; margin-top: 8px; }
+
+/* ===================== WHY US ===================== */
+.features-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 28px; }
+.feature-card {
+  background: var(--card-bg); border-radius: var(--radius); padding: 32px 24px;
+  border: 1px solid var(--light-gray); transition: all var(--transition);
+  text-align: center;
+}
+.feature-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-hover); border-color: var(--primary); }
+.feature-icon { width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; }
+.fi-1 { background: rgba(230,57,70,0.1); color: var(--primary); }
+.fi-2 { background: rgba(37,99,235,0.1); color: var(--btn); }
+.fi-3 { background: rgba(16,185,129,0.1); color: var(--accent); }
+.fi-4 { background: rgba(245,158,11,0.1); color: #F59E0B; }
+.fi-5 { background: rgba(139,92,246,0.1); color: #8B5CF6; }
+.fi-6 { background: rgba(236,72,153,0.1); color: #EC4899; }
+.feature-title { font-weight: 700; margin-bottom: 8px; }
+.feature-desc { color: var(--subtext); font-size: 0.87rem; line-height: 1.6; }
+
+/* ===================== REVIEWS ===================== */
+#reviews { background: var(--bg); }
+.reviews-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
+.review-card {
+  background: var(--card-bg); border-radius: var(--radius); padding: 28px;
+  border: 1px solid var(--light-gray); transition: all var(--transition);
+}
+.review-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-4px); }
+.review-stars { color: #FBBF24; font-size: 0.9rem; margin-bottom: 16px; }
+.review-text { color: var(--text); line-height: 1.7; font-size: 0.92rem; margin-bottom: 20px; }
+.review-author { display: flex; align-items: center; gap: 12px; }
+.review-avatar { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 700; color: white; }
+.ra-1 { background: linear-gradient(135deg, #E63946, #9b1c24); }
+.ra-2 { background: linear-gradient(135deg, #2563EB, #1e3a8a); }
+.ra-3 { background: linear-gradient(135deg, #10B981, #065f46); }
+.ra-4 { background: linear-gradient(135deg, #F59E0B, #92400e); }
+.ra-5 { background: linear-gradient(135deg, #8B5CF6, #4c1d95); }
+.ra-6 { background: linear-gradient(135deg, #EC4899, #831843); }
+.review-name { font-weight: 700; font-size: 0.9rem; }
+.review-date { font-size: 0.75rem; color: var(--subtext); }
+
+/* ===================== ABOUT ===================== */
+#about { background: var(--bg); }
+.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+.about-visual { position: relative; }
+.about-big-emoji { font-size: 10rem; text-align: center; display: block; animation: canFloat 4s ease-in-out infinite; }
+.about-badge {
+  position: absolute; background: var(--card-bg); border-radius: var(--radius);
+  padding: 16px 20px; box-shadow: var(--shadow); border: 1px solid var(--light-gray);
+  display: flex; align-items: center; gap: 12px;
+}
+.about-badge-1 { top: 20px; right: -20px; }
+.about-badge-2 { bottom: 20px; left: -20px; }
+.about-badge i { font-size: 1.4rem; color: var(--primary); }
+.about-badge-text { font-size: 0.85rem; font-weight: 600; color: var(--text); }
+.about-badge-sub { font-size: 0.72rem; color: var(--subtext); }
+.about-points { list-style: none; margin-top: 28px; display: flex; flex-direction: column; gap: 14px; }
+.about-points li { display: flex; align-items: center; gap: 12px; color: var(--text); font-size: 0.95rem; }
+.about-points li i { color: var(--accent); font-size: 1rem; }
+.about-cta { margin-top: 36px; display: flex; gap: 16px; flex-wrap: wrap; }
+.btn-accent { background: var(--accent); color: white; border: none; padding: 14px 32px; border-radius: 99px; font-family: 'Poppins', sans-serif; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all var(--transition); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+.btn-accent:hover { background: #059669; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(16,185,129,0.4); }
+
+/* ===================== FAQ ===================== */
+#faq { background: var(--bg); padding-top: 0; }
+.faq-list { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+.faq-item { background: var(--card-bg); border: 1px solid var(--light-gray); border-radius: var(--radius); overflow: hidden; }
+.faq-q {
+  padding: 20px 24px; display: flex; align-items: center; justify-content: space-between;
+  cursor: pointer; font-weight: 600; font-size: 0.95rem; transition: color var(--transition);
+}
+.faq-q:hover { color: var(--primary); }
+.faq-q i { transition: transform var(--transition); color: var(--subtext); }
+.faq-item.open .faq-q { color: var(--primary); }
+.faq-item.open .faq-q i { transform: rotate(45deg); color: var(--primary); }
+.faq-a { padding: 0 24px; max-height: 0; overflow: hidden; transition: all 0.4s ease; color: var(--subtext); font-size: 0.9rem; line-height: 1.7; }
+.faq-item.open .faq-a { max-height: 200px; padding: 0 24px 20px; }
+
+/* ===================== NEWSLETTER ===================== */
+#newsletter { background: linear-gradient(135deg, var(--secondary), #374151); padding: 80px 5%; }
+[data-theme="dark"] #newsletter { background: linear-gradient(135deg, #020617, #0F172A); }
+.newsletter-inner { max-width: 560px; margin: 0 auto; text-align: center; }
+.newsletter-inner .section-title { color: white; font-size: 2.2rem; }
+.newsletter-inner p { color: rgba(255,255,255,0.6); margin-bottom: 36px; }
+.newsletter-form { display: flex; gap: 12px; }
+.newsletter-form input {
+  flex: 1; padding: 14px 20px; border-radius: 99px;
+  border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.08);
+  color: white; font-family: 'Poppins', sans-serif; font-size: 0.9rem; outline: none;
+  transition: border-color var(--transition);
+}
+.newsletter-form input::placeholder { color: rgba(255,255,255,0.4); }
+.newsletter-form input:focus { border-color: var(--primary); }
+.newsletter-form button { background: var(--primary); color: white; border: none; padding: 14px 28px; border-radius: 99px; font-family: 'Poppins', sans-serif; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all var(--transition); white-space: nowrap; }
+.newsletter-form button:hover { background: #c62828; transform: scale(1.03); }
+
+/* ===================== CONTACT ===================== */
+#contact { background: var(--bg); }
+.contact-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 60px; align-items: start; }
+.contact-info { display: flex; flex-direction: column; gap: 24px; }
+.contact-item { display: flex; gap: 16px; align-items: flex-start; }
+.contact-icon { width: 48px; height: 48px; border-radius: 12px; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+.contact-label { font-size: 0.75rem; color: var(--subtext); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+.contact-value { font-weight: 600; color: var(--text); }
+.contact-form { display: flex; flex-direction: column; gap: 16px; background: var(--card-bg); padding: 36px; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--light-gray); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-group { display: flex; flex-direction: column; gap: 8px; }
+.form-group label { font-size: 0.85rem; font-weight: 600; color: var(--text); }
+.form-group input, .form-group textarea, .form-group select {
+  padding: 12px 16px; border-radius: 10px; border: 1.5px solid var(--light-gray);
+  background: var(--bg); color: var(--text); font-family: 'Poppins', sans-serif;
+  font-size: 0.9rem; outline: none; transition: border-color var(--transition);
+}
+.form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--btn); }
+.form-group textarea { resize: vertical; min-height: 120px; }
+
+/* ===================== FOOTER ===================== */
+footer { background: var(--secondary); color: white; padding: 70px 5% 30px; }
+[data-theme="dark"] footer { background: #020617; }
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+.footer-logo { font-size: 1.8rem; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 14px; }
+.footer-logo span { color: var(--primary); }
+.footer-desc { color: rgba(255,255,255,0.5); font-size: 0.88rem; line-height: 1.7; margin-bottom: 20px; }
+.footer-socials { display: flex; gap: 12px; }
+.social-btn { width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.6); display: flex; align-items: center; justify-content: center; font-size: 0.9rem; cursor: pointer; transition: all var(--transition); text-decoration: none; }
+.social-btn:hover { background: var(--primary); color: white; transform: translateY(-3px); }
+.footer-col h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 18px; color: white; }
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.footer-col ul li a { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.87rem; transition: color var(--transition); }
+.footer-col ul li a:hover { color: white; }
+.footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 28px; display: flex; align-items: center; justify-content: space-between; flex-wrap: gap; }
+.footer-bottom p { color: rgba(255,255,255,0.4); font-size: 0.83rem; }
+.footer-bottom p span { color: var(--primary); }
+
+/* ===================== CART SIDEBAR ===================== */
+.overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; opacity: 0; pointer-events: none; transition: opacity var(--transition); }
+.overlay.active { opacity: 1; pointer-events: all; }
+.cart-sidebar {
+  position: fixed; right: 0; top: 0; bottom: 0; width: min(440px, 100vw);
+  background: var(--card-bg); z-index: 2001; box-shadow: -8px 0 40px rgba(0,0,0,0.2);
+  transform: translateX(100%); transition: transform var(--transition);
+  display: flex; flex-direction: column;
+}
+.cart-sidebar.open { transform: translateX(0); }
+.cart-header { padding: 24px; border-bottom: 1px solid var(--light-gray); display: flex; align-items: center; justify-content: space-between; }
+.cart-header h3 { font-size: 1.2rem; font-weight: 700; }
+.close-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--subtext); transition: color var(--transition); }
+.close-btn:hover { color: var(--primary); }
+.cart-items { flex: 1; overflow-y: auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+.cart-item { display: flex; gap: 14px; align-items: center; padding-bottom: 16px; border-bottom: 1px solid var(--light-gray); }
+.cart-item-emoji { font-size: 2.2rem; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; background: var(--light-gray); border-radius: 12px; flex-shrink: 0; }
+.cart-item-info { flex: 1; }
+.cart-item-name { font-weight: 600; font-size: 0.9rem; margin-bottom: 4px; }
+.cart-item-price { color: var(--primary); font-weight: 700; font-size: 0.9rem; }
+.cart-item-controls { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+.qty-btn { width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--light-gray); background: none; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; color: var(--text); transition: all var(--transition); }
+.qty-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
+.qty-num { font-weight: 700; font-size: 0.9rem; width: 24px; text-align: center; }
+.cart-remove { margin-left: auto; background: none; border: none; cursor: pointer; color: var(--subtext); font-size: 0.9rem; transition: color var(--transition); }
+.cart-remove:hover { color: var(--primary); }
+.cart-empty { text-align: center; padding: 60px 20px; color: var(--subtext); }
+.cart-empty i { font-size: 3rem; margin-bottom: 16px; display: block; }
+.cart-footer { padding: 20px 24px; border-top: 1px solid var(--light-gray); }
+.cart-total-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.cart-total-label { color: var(--subtext); font-size: 0.9rem; }
+.cart-total-value { font-size: 1.4rem; font-weight: 800; color: var(--text); }
+.checkout-btn { width: 100%; background: var(--primary); color: white; border: none; padding: 16px; border-radius: 99px; font-family: 'Poppins', sans-serif; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all var(--transition); }
+.checkout-btn:hover { background: #c62828; }
+
+/* ===================== BACK TO TOP ===================== */
+#btt { position: fixed; bottom: 28px; right: 28px; width: 48px; height: 48px; border-radius: 50%; background: var(--primary); color: white; border: none; cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(230,57,70,0.4); opacity: 0; pointer-events: none; transition: all var(--transition); z-index: 999; }
+#btt.visible { opacity: 1; pointer-events: all; }
+#btt:hover { transform: translateY(-4px); }
+
+/* ===================== TOAST ===================== */
+.toast-container { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); z-index: 3000; display: flex; flex-direction: column; gap: 10px; align-items: center; pointer-events: none; }
+.toast { background: var(--secondary); color: white; padding: 12px 24px; border-radius: 99px; font-size: 0.88rem; font-weight: 500; box-shadow: var(--shadow-hover); display: flex; align-items: center; gap: 10px; animation: toastIn 0.3s ease; }
+[data-theme="dark"] .toast { background: var(--card-bg); color: var(--text); }
+.toast i { color: var(--accent); }
+@keyframes toastIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ===================== SCROLL REVEAL ===================== */
+.reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ===================== RESPONSIVE ===================== */
+@media (max-width: 1024px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 36px; }
+  .about-grid { grid-template-columns: 1fr; }
+  .about-visual { display: none; }
+  .contact-grid { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 28px; }
+}
+@media (max-width: 768px) {
+  .nav-links, .nav-search { display: none; }
+  .hamburger { display: flex; }
+  .hero-content { grid-template-columns: 1fr; text-align: center; gap: 40px; }
+  .hero-actions { justify-content: center; }
+  .hero-stats { justify-content: center; }
+  .hero-visual { order: -1; }
+  .can { width: 75px; height: 170px; font-size: 2rem; }
+  .can-2 { width: 88px; height: 200px; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+  .newsletter-form { flex-direction: column; }
+}
+@media (max-width: 480px) {
+  section { padding: 70px 5%; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .hero-stats { flex-wrap: wrap; gap: 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-logo">Soft<span>Drinks</span></div>
+  <div class="loader-bar"><div class="loader-fill"></div></div>
+  <p class="loader-tagline">Every Sip, Every Flavor, Every Occasion.</p>
+</div>
+
+<!-- TOAST -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#home" class="nav-logo">Soft<span>Drinks</span></a>
+  <ul class="nav-links">
+    <li><a href="#home" class="active">Home</a></li>
+    <li><a href="#products">Products</a></li>
+    <li><a href="#bestsellers">Best Sellers</a></li>
+    <li><a href="#offers">Offers</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="nav-search">
+      <i class="fas fa-search"></i>
+      <input type="text" placeholder="Search drinks…" id="searchInput" oninput="filterProducts()"/>
+    </div>
+    <button class="nav-btn" id="wishBtn" title="Wishlist" onclick="scrollToSection('products')">
+      <i class="far fa-heart"></i>
+      <span class="cart-count" id="wishCount" style="display:none">0</span>
+    </button>
+    <button class="nav-btn" onclick="toggleCart()" title="Cart">
+      <i class="fas fa-shopping-cart"></i>
+      <span class="cart-count" id="cartCount">0</span>
+    </button>
+    <button class="nav-btn" onclick="toggleDark()" id="darkBtn" title="Toggle dark mode">
+      <i class="fas fa-moon"></i>
+    </button>
+    <div class="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <div class="mobile-search">
+    <i class="fas fa-search" style="color:var(--subtext)"></i>
+    <input type="text" placeholder="Search drinks…" oninput="filterProducts()" />
+  </div>
+  <a href="#home" onclick="toggleMenu()">Home</a>
+  <a href="#products" onclick="toggleMenu()">Products</a>
+  <a href="#bestsellers" onclick="toggleMenu()">Best Sellers</a>
+  <a href="#offers" onclick="toggleMenu()">Offers</a>
+  <a href="#about" onclick="toggleMenu()">About Us</a>
+  <a href="#contact" onclick="toggleMenu()">Contact</a>
+</div>
+
+<!-- HERO -->
+<section id="home">
+  <div class="hero-bubbles" id="bubbles"></div>
+  <div class="hero-content">
+    <div class="hero-text">
+      <div class="hero-badge"><i class="fas fa-fire"></i> Pakistan's #1 Drink Store</div>
+      <h1 class="hero-title">
+        Every Drink<br>You Love,
+        <span class="highlight">Delivered.</span>
+      </h1>
+      <p class="hero-tagline">Discover 850+ premium beverages from the world's top brands. Fresh, fast, and always satisfying — every sip, every flavor, every occasion.</p>
+      <div class="hero-actions">
+        <a href="#products" class="btn-primary"><i class="fas fa-shopping-bag"></i> Shop Now</a>
+        <a href="#about" class="btn-outline"><i class="fas fa-play"></i> Learn More</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="hero-stat-num">120K+</div><div class="hero-stat-label">Happy Customers</div></div>
+        <div class="hero-stat"><div class="hero-stat-num">850+</div><div class="hero-stat-label">Drinks Available</div></div>
+        <div class="hero-stat"><div class="hero-stat-num">50+</div><div class="hero-stat-label">Top Brands</div></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-cans">
+        <div class="can-wrapper">
+          <div class="can can-1">🥤<div class="can-label">COLA</div></div>
+          <div class="glow"></div>
+        </div>
+        <div class="can-wrapper">
+          <div class="can can-2">🧃<div class="can-label">JUICE</div></div>
+          <div class="glow"></div>
+        </div>
+        <div class="can-wrapper">
+          <div class="can can-3">⚡<div class="can-label">ENERGY</div></div>
+          <div class="glow"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section id="products">
+  <div class="section-header reveal">
+    <div class="section-label">Our Collection</div>
+    <h2 class="section-title">Explore Our Drinks</h2>
+    <p class="section-sub">From fizzy classics to healthy alternatives — every taste, every mood, every moment.</p>
+  </div>
+  <div class="category-pills reveal" id="categoryPills"></div>
+  <div class="product-grid" id="productGrid"></div>
+</section>
+
+<!-- BEST SELLERS -->
+<section id="bestsellers">
+  <div class="section-header center reveal">
+    <div class="section-label" style="color:rgba(255,255,255,0.5)">Top Picks</div>
+    <h2 class="section-title">Best Sellers</h2>
+    <p class="section-sub" style="margin:0 auto">The drinks Pakistan can't get enough of. Tried, tested, and absolutely loved.</p>
+  </div>
+  <div class="bestseller-grid reveal" id="bestsellerGrid"></div>
+</section>
+
+<!-- OFFERS -->
+<section id="offers">
+  <div class="section-header reveal">
+    <div class="section-label">Hot Deals</div>
+    <h2 class="section-title">Exclusive Offers</h2>
+    <p class="section-sub">Don't miss out — limited-time deals crafted to save you more on every order.</p>
+  </div>
+  <div class="offers-grid reveal">
+    <div class="offer-card offer-1">
+      <div class="offer-bg"></div>
+      <div class="offer-emoji">🥤</div>
+      <div class="offer-content">
+        <div class="offer-tag">⚡ LIMITED TIME</div>
+        <div class="offer-title">Buy 2 Get 1 Free</div>
+        <div class="offer-desc">Mix and match any three drinks from our entire range. Third one's always on us!</div>
+        <button class="offer-btn" onclick="scrollToSection('products')">Grab the Deal</button>
+      </div>
+    </div>
+    <div class="offer-card offer-2">
+      <div class="offer-bg"></div>
+      <div class="offer-emoji">☀️</div>
+      <div class="offer-content">
+        <div class="offer-tag">🌞 SUMMER SALE</div>
+        <div class="offer-title">Up to 30% Off</div>
+        <div class="offer-desc">Beat the heat with our coolest summer discounts on juices, sparkling water, and more.</div>
+        <button class="offer-btn" onclick="scrollToSection('products')">Shop Summer</button>
+      </div>
+    </div>
+    <div class="offer-card offer-3">
+      <div class="offer-bg"></div>
+      <div class="offer-emoji">🎁</div>
+      <div class="offer-content">
+        <div class="offer-tag">📦 BUNDLE DEAL</div>
+        <div class="offer-title">Bundle &amp; Save Big</div>
+        <div class="offer-desc">Create your own crate of 12 drinks and save up to 25% instantly on your entire order.</div>
+        <button class="offer-btn" onclick="scrollToSection('products')">Build a Bundle</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section id="stats">
+  <div class="stats-grid reveal">
+    <div class="stat-item">
+      <div class="stat-num" data-target="120000">0</div>
+      <div class="stat-label">Happy Customers</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" data-target="15000">0</div>
+      <div class="stat-label">Orders Delivered</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" data-target="850">0</div>
+      <div class="stat-label">Drinks Available</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">24/7</div>
+      <div class="stat-label">Customer Support</div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section id="why">
+  <div class="section-header center reveal">
+    <div class="section-label">Why SoftDrinks</div>
+    <h2 class="section-title">The SoftDrinks Difference</h2>
+    <p class="section-sub">We're not just a store — we're your go-to drink destination, built around what matters most to you.</p>
+  </div>
+  <div class="features-grid reveal">
+    <div class="feature-card">
+      <div class="feature-icon fi-1"><i class="fas fa-crown"></i></div>
+      <div class="feature-title">Premium Brands</div>
+      <div class="feature-desc">Only the finest brands make it to our shelves — Pepsi, Coca-Cola, Red Bull, and 50+ more.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon fi-2"><i class="fas fa-rocket"></i></div>
+      <div class="feature-title">Fast Delivery</div>
+      <div class="feature-desc">Same-day delivery within city limits. Your drinks arrive cold and on time, every time.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon fi-3"><i class="fas fa-leaf"></i></div>
+      <div class="feature-title">Always Fresh</div>
+      <div class="feature-desc">Every product is checked for freshness and quality before it reaches your doorstep.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon fi-4"><i class="fas fa-lock"></i></div>
+      <div class="feature-title">Secure Payments</div>
+      <div class="feature-desc">Shop with complete peace of mind via encrypted, secure checkout and multiple payment options.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon fi-5"><i class="fas fa-headset"></i></div>
+      <div class="feature-title">24/7 Support</div>
+      <div class="feature-desc">Our friendly team is always here to help — day or night, seven days a week.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon fi-6"><i class="fas fa-undo"></i></div>
+      <div class="feature-title">Easy Returns</div>
+      <div class="feature-desc">Not happy? No problem. Hassle-free returns within 48 hours, no questions asked.</div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews">
+  <div class="section-header center reveal">
+    <div class="section-label">Customer Love</div>
+    <h2 class="section-title">What Our Customers Say</h2>
+    <p class="section-sub">Real reviews from real people who drink with us every day.</p>
+  </div>
+  <div class="reviews-grid reveal" id="reviewsGrid"></div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-grid">
+    <div class="about-visual reveal">
+      <span class="about-big-emoji">🥤</span>
+      <div class="about-badge about-badge-1">
+        <i class="fas fa-star"></i>
+        <div><div class="about-badge-text">4.9/5 Rating</div><div class="about-badge-sub">From 12,000+ reviews</div></div>
+      </div>
+      <div class="about-badge about-badge-2">
+        <i class="fas fa-truck"></i>
+        <div><div class="about-badge-text">Free Delivery</div><div class="about-badge-sub">On orders over Rs.999</div></div>
+      </div>
+    </div>
+    <div class="about-content reveal">
+      <div class="section-label">Who We Are</div>
+      <h2 class="section-title">Bringing the World's Finest Beverages to You</h2>
+      <p style="color:var(--subtext);line-height:1.8;margin-bottom:8px">SoftDrinks was born out of a simple belief: everyone deserves access to their favorite drink, anytime they want it. Since 2020, we've been making that a reality for over 120,000 customers across Pakistan.</p>
+      <p style="color:var(--subtext);line-height:1.8">We source directly from verified brand distributors to guarantee authenticity, freshness, and the best possible price — so you always get exactly what you paid for.</p>
+      <ul class="about-points">
+        <li><i class="fas fa-check-circle"></i> 850+ drinks across 8 categories</li>
+        <li><i class="fas fa-check-circle"></i> Direct sourcing from top brands</li>
+        <li><i class="fas fa-check-circle"></i> ISO-certified storage and cold chain</li>
+        <li><i class="fas fa-check-circle"></i> Eco-friendly packaging and delivery</li>
+        <li><i class="fas fa-check-circle"></i> Proudly Pakistani, serving nationwide</li>
+      </ul>
+      <div class="about-cta">
+        <a href="#products" class="btn-primary"><i class="fas fa-shopping-bag"></i> Shop Now</a>
+        <a href="#contact" class="btn-accent"><i class="fas fa-envelope"></i> Contact Us</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="section-header center reveal">
+    <div class="section-label">Got Questions?</div>
+    <h2 class="section-title">Frequently Asked Questions</h2>
+  </div>
+  <div class="faq-list reveal" id="faqList"></div>
+</section>
+
+<!-- NEWSLETTER -->
+<section id="newsletter">
+  <div class="newsletter-inner reveal">
+    <div class="section-label" style="color:rgba(255,255,255,0.5)">Stay Updated</div>
+    <h2 class="section-title">Get Exclusive Deals in Your Inbox</h2>
+    <p>Subscribe and be the first to know about new arrivals, flash sales, and members-only offers.</p>
+    <div class="newsletter-form">
+      <input type="email" placeholder="Enter your email address" id="emailInput"/>
+      <button onclick="subscribe()"><i class="fas fa-paper-plane"></i> Subscribe</button>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-header reveal">
+    <div class="section-label">Get in Touch</div>
+    <h2 class="section-title">We'd Love to Hear From You</h2>
+    <p class="section-sub">Questions, feedback, or a big order? Our team is ready and waiting.</p>
+  </div>
+  <div class="contact-grid">
+    <div class="contact-info reveal">
+      <div class="contact-item">
+        <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+        <div>
+          <div class="contact-label">Address</div>
+          <div class="contact-value">123 Saddar Road, Peshawar, KPK, Pakistan</div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon"><i class="fas fa-phone"></i></div>
+        <div>
+          <div class="contact-label">Phone</div>
+          <div class="contact-value">+92 300 123 4567</div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+        <div>
+          <div class="contact-label">Email</div>
+          <div class="contact-value">hello@softdrinks.pk</div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon"><i class="fas fa-clock"></i></div>
+        <div>
+          <div class="contact-label">Hours</div>
+          <div class="contact-value">Daily, 8:00 AM – 11:00 PM</div>
+        </div>
+      </div>
+    </div>
+    <div class="contact-form reveal">
+      <div class="form-row">
+        <div class="form-group">
+          <label>First Name</label>
+          <input type="text" placeholder="Ahmad" />
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input type="text" placeholder="Khan" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" placeholder="ahmad@example.com" />
+      </div>
+      <div class="form-group">
+        <label>Subject</label>
+        <select>
+          <option>General Inquiry</option>
+          <option>Order Support</option>
+          <option>Bulk Order</option>
+          <option>Return / Refund</option>
+          <option>Partnership</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Message</label>
+        <textarea placeholder="Write your message here…"></textarea>
+      </div>
+      <button class="btn-primary" style="width:100%;justify-content:center" onclick="submitContact()">
+        <i class="fas fa-paper-plane"></i> Send Message
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-logo">Soft<span>Drinks</span></div>
+      <p class="footer-desc">Pakistan's premier destination for every kind of beverage. Fresh, fast, and always delicious — we deliver the drinks you love right to your door.</p>
+      <div class="footer-socials">
+        <a href="#" class="social-btn"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="social-btn"><i class="fab fa-instagram"></i></a>
+        <a href="#" class="social-btn"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="social-btn"><i class="fab fa-tiktok"></i></a>
+        <a href="#" class="social-btn"><i class="fab fa-youtube"></i></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#products">Products</a></li>
+        <li><a href="#bestsellers">Best Sellers</a></li>
+        <li><a href="#offers">Offers</a></li>
+        <li><a href="#about">About Us</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Categories</h4>
+      <ul>
+        <li><a href="#products">Soft Drinks</a></li>
+        <li><a href="#products">Energy Drinks</a></li>
+        <li><a href="#products">Juices</a></li>
+        <li><a href="#products">Sports Drinks</a></li>
+        <li><a href="#products">Tea & Coffee</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <ul>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#contact">Contact Us</a></li>
+        <li><a href="#">Track Order</a></li>
+        <li><a href="#">Returns Policy</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 <span>SoftDrinks</span>. All rights reserved. Made with ❤️ in Pakistan.</p>
+    <p>Every Sip, Every Flavor, <span>Every Occasion.</span></p>
+  </div>
+</footer>
+
+<!-- CART -->
+<div class="overlay" id="overlay" onclick="toggleCart()"></div>
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-header">
+    <h3><i class="fas fa-shopping-cart" style="color:var(--primary);margin-right:8px"></i> Your Cart</h3>
+    <button class="close-btn" onclick="toggleCart()"><i class="fas fa-times"></i></button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-footer" id="cartFooter" style="display:none">
+    <div class="cart-total-row">
+      <span class="cart-total-label">Total</span>
+      <span class="cart-total-value" id="cartTotal">Rs.0</span>
+    </div>
+    <button class="checkout-btn" onclick="checkout()"><i class="fas fa-bolt" style="margin-right:8px"></i>Checkout</button>
+  </div>
+</div>
+
+<button id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fas fa-arrow-up"></i></button>
+
+<script>
+// ===================== DATA =====================
+const products = [
+  { id:1,  name:'Pepsi Cola',         emoji:'🥤', price:85,  old:100, rating:4.9, reviews:2341, category:'Soft Drinks',    badge:'hot',  desc:'Classic cola' },
+  { id:2,  name:'Coca-Cola',          emoji:'🍫', price:90,  old:110, rating:4.8, reviews:3102, category:'Soft Drinks',    badge:'hot',  desc:'The original' },
+  { id:3,  name:'Sprite',             emoji:'🌿', price:80,  old:null, rating:4.7, reviews:1821, category:'Soft Drinks',    badge:null,   desc:'Crisp lemon-lime' },
+  { id:4,  name:'Fanta Orange',       emoji:'🍊', price:80,  old:null, rating:4.6, reviews:1245, category:'Soft Drinks',    badge:'new',  desc:'Fruity fizz' },
+  { id:5,  name:'Mountain Dew',       emoji:'💚', price:85,  old:null, rating:4.7, reviews:987,  category:'Soft Drinks',    badge:null,   desc:'Citrus rush' },
+  { id:6,  name:'7UP',                emoji:'🫧', price:80,  old:null, rating:4.5, reviews:876,  category:'Soft Drinks',    badge:null,   desc:'Clear & crisp' },
+  { id:7,  name:'Red Bull',           emoji:'⚡', price:280, old:320, rating:4.8, reviews:2150, category:'Energy Drinks',  badge:'hot',  desc:'Wings guaranteed' },
+  { id:8,  name:'Sting Energy',       emoji:'🔴', price:120, old:null, rating:4.6, reviews:1340, category:'Energy Drinks',  badge:null,   desc:'Power rush' },
+  { id:9,  name:'Monster Energy',     emoji:'🟢', price:260, old:300, rating:4.7, reviews:980,  category:'Energy Drinks',  badge:'new',  desc:'Unleash the beast' },
+  { id:10, name:'Speed Energy',       emoji:'🏎️', price:100, old:null, rating:4.3, reviews:450,  category:'Energy Drinks',  badge:null,   desc:'Full throttle' },
+  { id:11, name:'Shezan Mango',       emoji:'🥭', price:70,  old:null, rating:4.5, reviews:1120, category:'Juices',         badge:null,   desc:'Pure mango' },
+  { id:12, name:'Nestle Pure Life',   emoji:'💧', price:60,  old:null, rating:4.4, reviews:890,  category:'Sparkling Water',badge:'new',  desc:'Pure hydration' },
+  { id:13, name:'Gatorade Blue',      emoji:'🔵', price:150, old:180, rating:4.6, reviews:670,  category:'Sports Drinks',  badge:null,   desc:'Electrolyte boost' },
+  { id:14, name:'Olpers Milk',        emoji:'🥛', price:90,  old:null, rating:4.5, reviews:560,  category:'Milk Drinks',    badge:null,   desc:'Full cream milk' },
+  { id:15, name:'Nescafé Classic',    emoji:'☕', price:180, old:200, rating:4.7, reviews:1230, category:'Coffee Drinks',  badge:'hot',  desc:'Instant coffee' },
+  { id:16, name:'Lipton Iced Tea',    emoji:'🍵', price:95,  old:null, rating:4.4, reviews:720,  category:'Tea Drinks',     badge:'new',  desc:'Refreshing iced tea' },
+];
+
+const bestsellers = [
+  { rank:'#1', emoji:'🥤', name:'Pepsi 1.5L', price:'Rs.170', pct:98 },
+  { rank:'#2', emoji:'⚡', name:'Red Bull 250ml', price:'Rs.280', pct:94 },
+  { rank:'#3', emoji:'🍊', name:'Fanta 1.5L', price:'Rs.160', pct:89 },
+  { rank:'#4', emoji:'💚', name:'Mountain Dew', price:'Rs.85', pct:85 },
+  { rank:'#5', emoji:'🟢', name:'Monster Energy', price:'Rs.260', pct:80 },
+  { rank:'#6', emoji:'☕', name:'Nescafé Classic', price:'Rs.180', pct:75 },
+  { rank:'#7', emoji:'🍵', name:'Lipton Iced Tea', price:'Rs.95', pct:70 },
+  { rank:'#8', emoji:'🔵', name:'Gatorade Blue', price:'Rs.150', pct:65 },
+];
+
+const reviews = [
+  { stars:5, text:'Honestly the best online drink store in Pakistan. My order arrived within 3 hours and everything was cold and perfectly packed. Will never go anywhere else!', name:'Ahmad Khan', date:'2 days ago', initials:'A', cls:'ra-1' },
+  { stars:5, text:'The variety here is insane — I found drinks I hadn\'t seen anywhere in Peshawar. Prices are great and the website is so easy to use.', name:'Sara Malik', date:'1 week ago', initials:'S', cls:'ra-2' },
+  { stars:5, text:'Ordered a bulk bundle for my café and saved a ton. Delivery was fast and customer support was super helpful when I had a question.', name:'Usman Tariq', date:'2 weeks ago', initials:'U', cls:'ra-3' },
+  { stars:4, text:'Great selection of energy drinks that I can\'t find locally. Red Bull and Monster always in stock. Packaging is excellent — nothing arrived damaged.', name:'Fatima Riaz', date:'3 weeks ago', initials:'F', cls:'ra-4' },
+  { stars:5, text:'Been ordering every week for the past month. The quality is always consistent and the deals keep getting better. 100% recommended!', name:'Bilal Ahmed', date:'1 month ago', initials:'B', cls:'ra-5' },
+  { stars:5, text:'Amazing experience! The Buy 2 Get 1 Free offer saved me so much. Fast checkout, clear tracking, and delicious drinks. What more could you want?', name:'Zainab Shah', date:'1 month ago', initials:'Z', cls:'ra-6' },
+];
+
+const faqs = [
+  { q:'How fast is delivery?', a:'We offer same-day delivery for orders placed before 6 PM within city limits. Orders placed after 6 PM are delivered the next morning. We partner with reliable courier services to ensure your drinks arrive cold and on time.' },
+  { q:'What is the minimum order amount?', a:'There is no minimum order! However, orders over Rs.999 qualify for free delivery. Smaller orders carry a flat delivery fee of Rs.99.' },
+  { q:'Do you offer bulk / wholesale pricing?', a:'Absolutely! For orders of 24 or more units, we offer special wholesale pricing. Contact our sales team at hello@softdrinks.pk or call us for a custom quote.' },
+  { q:'Are the products fresh and authentic?', a:'Yes, 100%. We source directly from authorized distributors of every brand we carry. All products go through a freshness and authenticity check before shipping.' },
+  { q:'What payment methods do you accept?', a:'We accept Cash on Delivery (COD), JazzCash, EasyPaisa, bank transfer, and major debit/credit cards. All online payments are encrypted and secure.' },
+  { q:'Can I return or exchange a product?', a:'If you receive a damaged, expired, or incorrect item, we\'ll replace it or issue a full refund within 48 hours of delivery. Just contact our support team with a photo of the product.' },
+];
+
+const categories = ['All', 'Soft Drinks', 'Energy Drinks', 'Juices', 'Sparkling Water', 'Sports Drinks', 'Milk Drinks', 'Coffee Drinks', 'Tea Drinks'];
+const categoryEmojis = { 'All':'🌟', 'Soft Drinks':'🥤', 'Energy Drinks':'⚡', 'Juices':'🍹', 'Sparkling Water':'💧', 'Sports Drinks':'🏃', 'Milk Drinks':'🥛', 'Coffee Drinks':'☕', 'Tea Drinks':'🍵' };
+
+// ===================== STATE =====================
+let cart = {};
+let wishlist = new Set();
+let activeCategory = 'All';
+let searchQuery = '';
+
+// ===================== INIT =====================
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const loader = document.getElementById('loader');
+    loader.style.opacity = '0';
+    setTimeout(() => loader.style.display = 'none', 500);
+  }, 2000);
+  createBubbles();
+  renderCategories();
+  renderProducts();
+  renderBestsellers();
+  renderReviews();
+  renderFAQ();
+  initScrollObserver();
+});
+
+// ===================== BUBBLES =====================
+function createBubbles() {
+  const container = document.getElementById('bubbles');
+  for (let i = 0; i < 12; i++) {
+    const b = document.createElement('div');
+    b.className = 'bubble';
+    const size = Math.random() * 80 + 20;
+    b.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;animation-duration:${Math.random()*12+8}s;animation-delay:${Math.random()*8}s;`;
+    container.appendChild(b);
+  }
+}
+
+// ===================== CATEGORIES =====================
+function renderCategories() {
+  const container = document.getElementById('categoryPills');
+  container.innerHTML = categories.map(cat => `
+    <button class="pill ${cat === activeCategory ? 'active' : ''}" onclick="setCategory('${cat}')">
+      ${categoryEmojis[cat]} ${cat}
+    </button>
+  `).join('');
+}
+function setCategory(cat) {
+  activeCategory = cat;
+  renderCategories();
+  renderProducts();
+}
+
+// ===================== PRODUCTS =====================
+function filterProducts() {
+  const inp = document.getElementById('searchInput');
+  searchQuery = inp ? inp.value.toLowerCase() : '';
+  renderProducts();
+}
+function renderProducts() {
+  const grid = document.getElementById('productGrid');
+  let filtered = products.filter(p => {
+    const matchCat = activeCategory === 'All' || p.category === activeCategory;
+    const matchSearch = p.name.toLowerCase().includes(searchQuery) || p.category.toLowerCase().includes(searchQuery);
+    return matchCat && matchSearch;
+  });
+  if (!filtered.length) { grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--subtext)"><i class="fas fa-search" style="font-size:3rem;margin-bottom:16px;display:block;opacity:0.3"></i>No drinks found for that search.</div>'; return; }
+  grid.innerHTML = filtered.map(p => `
+    <div class="product-card" id="card-${p.id}">
+      <div class="product-card-img">
+        <span class="emoji">${p.emoji}</span>
+        ${p.badge === 'hot' ? '<div class="badge-hot">🔥 HOT</div>' : ''}
+        ${p.badge === 'new' ? '<div class="badge-new">✨ NEW</div>' : ''}
+        <button class="wish-btn ${wishlist.has(p.id) ? 'active' : ''}" onclick="toggleWish(${p.id})" title="Add to Wishlist">
+          <i class="${wishlist.has(p.id) ? 'fas' : 'far'} fa-heart"></i>
+        </button>
+      </div>
+      <div class="product-card-body">
+        <div class="product-category">${p.category}</div>
+        <div class="product-name">${p.name}</div>
+        <div class="stars">${'★'.repeat(Math.floor(p.rating))}${p.rating % 1 >= 0.5 ? '½' : ''}<span>(${p.reviews.toLocaleString()})</span></div>
+        <div class="product-footer">
+          <div class="product-price">
+            ${p.old ? `<span class="old">Rs.${p.old}</span>` : ''}Rs.${p.price}
+          </div>
+          <button class="add-btn ${cart[p.id] ? 'added' : ''}" onclick="addToCart(${p.id})">
+            <i class="fas ${cart[p.id] ? 'fa-check' : 'fa-plus'}"></i> ${cart[p.id] ? 'Added' : 'Add'}
+          </button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ===================== CART =====================
+function addToCart(id) {
+  const p = products.find(x => x.id === id);
+  if (!p) return;
+  cart[id] = cart[id] ? { ...cart[id], qty: cart[id].qty + 1 } : { ...p, qty: 1 };
+  renderProducts();
+  updateCartUI();
+  toast(`${p.emoji} ${p.name} added to cart!`);
+}
+function removeFromCart(id) {
+  delete cart[id];
+  renderProducts();
+  updateCartUI();
+}
+function changeQty(id, delta) {
+  if (!cart[id]) return;
+  cart[id].qty += delta;
+  if (cart[id].qty <= 0) { removeFromCart(id); return; }
+  updateCartUI();
+}
+function updateCartUI() {
+  const items = Object.values(cart);
+  const count = items.reduce((a,b) => a + b.qty, 0);
+  const total = items.reduce((a,b) => a + b.price * b.qty, 0);
+  document.getElementById('cartCount').textContent = count;
+  const cartItemsEl = document.getElementById('cartItems');
+  const cartFooter = document.getElementById('cartFooter');
+  if (!items.length) {
+    cartItemsEl.innerHTML = '<div class="cart-empty"><i class="fas fa-shopping-cart" style="opacity:0.2"></i><p>Your cart is empty</p><p style="font-size:0.8rem;margin-top:8px">Add some drinks to get started!</p></div>';
+    cartFooter.style.display = 'none';
+    return;
+  }
+  cartFooter.style.display = 'block';
+  document.getElementById('cartTotal').textContent = `Rs.${total}`;
+  cartItemsEl.innerHTML = items.map(item => `
+    <div class="cart-item">
+      <div class="cart-item-emoji">${item.emoji}</div>
+      <div class="cart-item-info">
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-price">Rs.${item.price} each</div>
+        <div class="cart-item-controls">
+          <button class="qty-btn" onclick="changeQty(${item.id}, -1)">−</button>
+          <span class="qty-num">${item.qty}</span>
+          <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
+          <button class="cart-remove" onclick="removeFromCart(${item.id})" title="Remove"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+function toggleCart() {
+  document.getElementById('cartSidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('active');
+  updateCartUI();
+}
+function checkout() {
+  if (!Object.keys(cart).length) return;
+  cart = {};
+  renderProducts();
+  updateCartUI();
+  toggleCart();
+  toast('🎉 Order placed successfully! Thank you!');
+}
+
+// ===================== WISHLIST =====================
+function toggleWish(id) {
+  if (wishlist.has(id)) wishlist.delete(id); else wishlist.add(id);
+  renderProducts();
+  const count = wishlist.size;
+  const wc = document.getElementById('wishCount');
+  wc.textContent = count;
+  wc.style.display = count > 0 ? 'flex' : 'none';
+  const p = products.find(x => x.id === id);
+  toast(wishlist.has(id) ? `❤️ ${p.name} added to wishlist!` : `💔 ${p.name} removed from wishlist`);
+}
+
+// ===================== BESTSELLERS =====================
+function renderBestsellers() {
+  const grid = document.getElementById('bestsellerGrid');
+  grid.innerHTML = bestsellers.map((b, i) => `
+    <div class="bestseller-card" onclick="scrollToSection('products')">
+      <div class="bestseller-rank">${b.rank} BESTSELLER</div>
+      <span class="bestseller-emoji">${b.emoji}</span>
+      <div class="bestseller-name">${b.name}</div>
+      <div class="bestseller-price">${b.price}</div>
+      <div class="bestseller-bar"><div class="bestseller-fill" style="width:0" data-pct="${b.pct}"></div></div>
+    </div>
+  `).join('');
+}
+
+// ===================== REVIEWS =====================
+function renderReviews() {
+  document.getElementById('reviewsGrid').innerHTML = reviews.map(r => `
+    <div class="review-card">
+      <div class="review-stars">${'★'.repeat(r.stars)}</div>
+      <p class="review-text">"${r.text}"</p>
+      <div class="review-author">
+        <div class="review-avatar ${r.cls}">${r.initials}</div>
+        <div><div class="review-name">${r.name}</div><div class="review-date">${r.date}</div></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ===================== FAQ =====================
+function renderFAQ() {
+  document.getElementById('faqList').innerHTML = faqs.map((f, i) => `
+    <div class="faq-item" id="faq-${i}">
+      <div class="faq-q" onclick="toggleFAQ(${i})">
+        ${f.q}
+        <i class="fas fa-plus"></i>
+      </div>
+      <div class="faq-a">${f.a}</div>
+    </div>
+  `).join('');
+}
+function toggleFAQ(i) {
+  const item = document.getElementById(`faq-${i}`);
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(el => el.classList.remove('open'));
+  if (!wasOpen) item.classList.add('open');
+}
+
+// ===================== DARK MODE =====================
+function toggleDark() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.getElementById('darkBtn').innerHTML = `<i class="fas fa-${isDark ? 'moon' : 'sun'}"></i>`;
+  toast(isDark ? '☀️ Light mode on' : '🌙 Dark mode on');
+}
+
+// ===================== MOBILE MENU =====================
+function toggleMenu() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+
+// ===================== SCROLL =====================
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('navbar');
+  nav.classList.toggle('scrolled', window.scrollY > 20);
+  const btt = document.getElementById('btt');
+  btt.classList.toggle('visible', window.scrollY > 400);
+  // Active nav link
+  const sections = ['home','products','bestsellers','offers','about','contact'];
+  let current = '';
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && window.scrollY >= el.offsetTop - 100) current = id;
+  });
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === `#${current}`);
+  });
+});
+
+// ===================== SCROLL OBSERVER =====================
+function initScrollObserver() {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        // Animate stat counters
+        if (e.target.closest('#stats')) {
+          e.target.querySelectorAll('[data-target]').forEach(el => animateCounter(el));
+        }
+        // Animate bestseller bars
+        e.target.querySelectorAll('.bestseller-fill').forEach(el => {
+          el.style.width = el.dataset.pct + '%';
+        });
+      }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+}
+
+// ===================== COUNTER ANIMATION =====================
+function animateCounter(el) {
+  const target = parseInt(el.dataset.target);
+  const dur = 2000;
+  const step = target / (dur / 16);
+  let cur = 0;
+  const timer = setInterval(() => {
+    cur = Math.min(cur + step, target);
+    el.textContent = Math.floor(cur).toLocaleString() + '+';
+    if (cur >= target) clearInterval(timer);
+  }, 16);
+}
+
+// ===================== TOAST =====================
+function toast(msg) {
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = `<i class="fas fa-check-circle"></i> ${msg}`;
+  c.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateY(10px)'; t.style.transition = '0.3s'; setTimeout(() => t.remove(), 300); }, 2500);
+}
+
+// ===================== NEWSLETTER =====================
+function subscribe() {
+  const email = document.getElementById('emailInput').value.trim();
+  if (!email || !email.includes('@')) { toast('⚠️ Please enter a valid email'); return; }
+  document.getElementById('emailInput').value = '';
+  toast('🎉 Subscribed! Welcome to the SoftDrinks family!');
+}
+
+// ===================== CONTACT =====================
+function submitContact() {
+  toast('✅ Message sent! We\'ll get back to you within 24 hours.');
+}
+
+// ===================== HELPERS =====================
+function scrollToSection(id) {
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+}
+
+// Init cart display
+updateCartUI();
+</script>
+</body>
+</html>
